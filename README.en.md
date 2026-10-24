@@ -62,9 +62,17 @@ used from another machine.
 
 ## Installation
 
-Download `MacDisplayVolume-<version>-arm64.zip` from
-[Releases](https://github.com/wangmancang520/mac-display-volume/releases/latest),
-unzip it, and run `./install-release.sh` from the unzipped folder.
+Download `MacDisplayVolume-<version>.pkg` from
+[Releases](https://github.com/wangmancang520/mac-display-volume/releases/latest)
+and double-click it. The installer installs the app and the driver, restarts
+CoreAudio, and opens the app when it finishes.
+
+The package is not signed or notarized by Apple. If macOS blocks it, open
+**System Settings → Privacy & Security**, find the blocked package at the bottom
+and click **Open Anyway**.
+
+A zip package is also available: unzip it and run `./install-release.sh` from
+the unzipped folder.
 
 To build and install from source instead, Xcode 26 or newer is required.
 
@@ -81,6 +89,9 @@ You may be asked for an administrator password during installation. If the new
 audio device does not appear immediately after installation, restart CoreAudio.
 If it still does not appear, rebooting the Mac usually clears stale CoreAudio
 caches and old driver helper processes.
+
+To build the installer package yourself, run `Scripts/build-pkg.sh`. Set
+`INSTALLER_SIGN_IDENTITY` to a Developer ID Installer identity to sign it.
 
 ## Usage
 

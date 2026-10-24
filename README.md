@@ -93,24 +93,35 @@ macOS 应用
 
 ## 📦 下载安装
 
-### 方式一：下载预编译版本（推荐）
+### 方式一：pkg 安装包（推荐）
 
 1. 前往 [Releases 页面](https://github.com/wangmancang520/mac-display-volume/releases/latest)，
-   下载最新的 `MacDisplayVolume-<版本号>-arm64.zip`。
-2. 解压后，在终端中进入解压出来的文件夹，运行：
+   下载最新的 `MacDisplayVolume-<版本号>.pkg`；
+2. 双击 pkg，按安装向导点击 **继续 → 安装**，输入开机密码；
+3. 安装完成后应用会自动打开，按 [使用方法](#-使用方法) 设置即可。
 
-   ```sh
-   ./install-release.sh
-   ```
+安装包会自动完成以下工作，无需手动操作终端：
 
-3. 按提示输入管理员密码。脚本会安装：
-   - `/Applications/Mac Display Volume.app`
-   - `/Library/Audio/Plug-Ins/HAL/MacDisplayVolumeAudio.driver`
+- 安装菜单栏应用到 `/Applications/Mac Display Volume.app`；
+- 安装音频驱动到 `/Library/Audio/Plug-Ins/HAL/MacDisplayVolumeAudio.driver`；
+- 重启 CoreAudio，让系统识别新的音频设备；
+- 升级时自动退出旧版应用并替换旧驱动。
 
 > [!IMPORTANT]
-> Release 包使用 ad-hoc 签名，没有经过 Apple 公证。安装脚本会自动清除下载隔离标记；
-> 如果你手动拷贝应用，首次打开时需要在 Finder 中右键应用 → **打开**，
-> 或到 **系统设置 → 隐私与安全性** 中允许运行。
+> 安装包没有经过 Apple 签名和公证，双击时 macOS 可能提示 **“无法打开，因为 Apple 无法检查其是否包含恶意软件”**。
+> 此时请打开 **系统设置 → 隐私与安全性**，在页面底部找到被拦截的
+> `MacDisplayVolume-<版本号>.pkg`，点击 **仍要打开**，再次确认后即可继续安装。
+
+<details>
+<summary>备选：使用 zip 包 + 脚本安装</summary>
+
+下载 `MacDisplayVolume-<版本号>-arm64.zip`，解压后在终端进入解压出来的文件夹，运行：
+
+```sh
+./install-release.sh
+```
+
+</details>
 
 ### 方式二：从源码安装
 
@@ -198,6 +209,10 @@ Scripts/build-app.sh
 # 构建 HAL driver，输出到 Driver/Build/MacDisplayVolumeAudio.driver
 Scripts/build-driver.sh
 
+# 打包 pkg 安装包，输出到 Build/MacDisplayVolume-<版本号>.pkg
+# 设置 INSTALLER_SIGN_IDENTITY 可使用 Developer ID Installer 证书签名
+Scripts/build-pkg.sh
+
 # 运行单元测试
 swift test
 ```
@@ -222,7 +237,8 @@ mac-display-volume/
 │   └── Sources/               # CoreAudio HAL driver（C++）
 ├── Tools/DriverProbe/         # driver 诊断工具
 ├── Tests/                     # 单元测试
-├── Scripts/                   # 构建、安装、卸载、测试脚本
+├── Installer/                 # pkg 安装包的安装脚本与欢迎页
+├── Scripts/                   # 构建、打包、安装、卸载、测试脚本
 └── Docs/                      # 架构文档与资源
 ```
 

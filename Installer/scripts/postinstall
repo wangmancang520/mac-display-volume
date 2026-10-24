@@ -1,0 +1,15 @@
+#!/bin/sh
+# Make coreaudiod load the new driver, then open the app for the logged-in user.
+DRIVER="/Library/Audio/Plug-Ins/HAL/MacDisplayVolumeAudio.driver"
+APP="/Applications/Mac Display Volume.app"
+
+chown -R root:wheel "$DRIVER"
+xattr -cr "$APP" "$DRIVER" 2>/dev/null || true
+killall coreaudiod 2>/dev/null || true
+
+CONSOLE_USER="$(stat -f %Su /dev/console)"
+if [ -n "$CONSOLE_USER" ] && [ "$CONSOLE_USER" != "root" ]; then
+  CONSOLE_UID="$(id -u "$CONSOLE_USER")"
+  launchctl asuser "$CONSOLE_UID" sudo -u "$CONSOLE_USER" open "$APP" || true
+fi
+exit 0

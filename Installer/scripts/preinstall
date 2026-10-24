@@ -1,0 +1,5 @@
+#!/bin/sh
+# Stop the running app and remove the previous driver before installing.
+pkill -x DisplayVolume || true
+rm -rf "/Library/Audio/Plug-Ins/HAL/MacDisplayVolumeAudio.driver"
+exit 0
